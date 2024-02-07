@@ -84,3 +84,61 @@ const items = [
     img: "./img/12.jpeg",
   },
 ];
+
+const template = document.querySelector('#item-template');
+const shopItem = document.querySelector('#shop-items');
+const searchBtn = document.querySelector('#search-btn');
+const searchInput = document.querySelector('#search-input');
+const textNotFound = document.querySelector('#nothing-found');
+
+
+function prepareTags(tag) {
+  const element = document.createElement('span');
+  element.classList.add('tag');
+  element.textContent = tag;
+  return element;
+}
+
+function prepareItem(item) {
+  const clone = template.content.cloneNode(true);
+  clone.querySelector('h1').textContent = item.title;
+  clone.querySelector('p').textContent = item.description;
+  clone.querySelector('span').textContent = `${item.price}Р`;
+  clone.querySelector('img').src = item.img;
+
+  const allTags = clone.querySelector('.tags');
+
+  item.tags.forEach((tag) => {
+    allTags.append(prepareTags(tag));
+  });
+
+  return clone;
+}
+
+function searchItem(items, searchInput, textNotFound) {
+  shopItem.innerHTML = '';
+  textNotFound.textContent = '';
+
+  let search = searchInput.value;
+  search = search.trim().toLowerCase();
+
+  for (let item of items) {
+    let description = item.title;
+    description = description.toLowerCase();
+    if (description.includes(search)) {
+      shopItem.append(prepareItem(item));
+    }
+  }
+  if (shopItem.textContent == '') {
+
+    textNotFound.textContent = 'Ничего не найдено';
+  }
+  searchInput.value = '';
+
+}
+
+for (let item of items) {
+  shopItem.append(prepareItem(item));
+}
+
+searchBtn.addEventListener('click', () => searchItem(items, searchInput, textNotFound));
